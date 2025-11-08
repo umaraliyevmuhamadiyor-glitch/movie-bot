@@ -473,7 +473,8 @@ if __name__ == '__main__':
     try:
         bot.remove_webhook()
         time.sleep(1)
-        webhook_url = f"https://movie-bot-jegapomember.com/{BOT_TOKEN}"
+        # Render avtomatik URL ni aniqlaydi
+        webhook_url = f"https://{os.environ.get('RENDER_EXTERNAL_HOSTNAME', 'movie-bot-jqgp.onrender.com')}/{BOT_TOKEN}"
         bot.set_webhook(url=webhook_url)
         print(f"✅ Webhook sozlandi: {webhook_url}")
     except Exception as e:
