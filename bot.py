@@ -320,17 +320,23 @@ def start_cmd(message):
     save_user(user.id, user.username, user.first_name, user.last_name)
     
     welcome_text = """
-🎬 * Kino Botiga Xush Kelibsiz!*
+🎬 Mukammal Kino Botiga Xush Kelibsiz!
 
-*Qidirish usullari:*
+Qidirish usullari:
+🔍 Film nomi: Avengers
+🔢 Film ID: 550
 
-*Asosiy menyu:*
+Asosiy menyu:
 🎯 /popular - Mashhur filmlar
 🚀 /upcoming - Tez kunda
 🏆 /top - Eng yaxshilar
 ❤️ /favorites - Saqlanganlar
 📊 /stats - Statistika
 🎪 /genres - Janrlar
+
+Admin panel: /admin
+Yordam: /help
+    """
     
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     btn1 = types.InlineKeyboardButton("🔍 Qidirish", switch_inline_query_current_chat="")
@@ -344,22 +350,22 @@ def start_cmd(message):
 @bot.message_handler(commands=['help'])
 def help_cmd(message):
     help_text = """
-❓ *Botdan foydalanish yo'riqnomasi:*
+Botdan foydalanish yo'riqnomasi:
 
-*1. Film nomi bilan qidirish:*
-`Avengers`, `Titanic`, `Inception`
+1. Film nomi bilan qidirish:
+Avengers, Titanic, Inception
 
-*2. Film ID bilan qidirish:*
-`550`, `680`, `238`
+2. Film ID bilan qidirish:
+550, 680, 238
 
-*Mashhur film ID lari:*
+Mashhur film ID lari:
 • 550 - Jangchi klubi
 • 680 - Pulp Fiction  
 • 238 - Krestiy ota
 • 13 - Forrest Gump
 • 155 - Qora ritsar
 
-*Buyruqlar:*
+Buyruqlar:
 /popular - Mashhur filmlar
 /upcoming - Tez orada
 /top - Eng yuqori reytingli
@@ -372,7 +378,7 @@ def help_cmd(message):
 
 @bot.message_handler(commands=['popular'])
 def popular_cmd(message):
-    bot.send_message(message.chat.id, "🎯 *Mashhur filmlar:*", parse_mode='Markdown')
+    bot.send_message(message.chat.id, "🎯 Mashhur filmlar:", parse_mode='Markdown')
     movies = tmdb.get_popular_movies()
     if movies and 'results' in movies:
         for movie in movies['results'][:5]:
@@ -380,7 +386,7 @@ def popular_cmd(message):
 
 @bot.message_handler(commands=['upcoming'])
 def upcoming_cmd(message):
-    bot.send_message(message.chat.id, "🚀 *Tez orada chiqadigan filmlar:*", parse_mode='Markdown')
+    bot.send_message(message.chat.id, "🚀 Tez orada chiqadigan filmlar:", parse_mode='Markdown')
     movies = tmdb.get_upcoming_movies()
     if movies and 'results' in movies:
         for movie in movies['results'][:5]:
@@ -388,7 +394,7 @@ def upcoming_cmd(message):
 
 @bot.message_handler(commands=['top'])
 def top_cmd(message):
-    bot.send_message(message.chat.id, "🏆 *Eng yuqori reytingli filmlar:*", parse_mode='Markdown')
+    bot.send_message(message.chat.id, "🏆 Eng yuqori reytingli filmlar:", parse_mode='Markdown')
     movies = tmdb.get_top_rated()
     if movies and 'results' in movies:
         for movie in movies['results'][:5]:
@@ -401,7 +407,7 @@ def favorites_cmd(message):
         bot.send_message(message.chat.id, "❤️ Saqlangan filmlaringiz yo'q!")
         return
     
-    bot.send_message(message.chat.id, f"❤️ *Saqlangan filmlar ({len(favorites)} ta):*", parse_mode='Markdown')
+    bot.send_message(message.chat.id, f"❤️ Saqlangan filmlar ({len(favorites)} ta):", parse_mode='Markdown')
     for movie_id, title in favorites[:10]:
         movie = tmdb.get_movie_details(movie_id)
         if movie:
@@ -417,7 +423,7 @@ def stats_cmd(message):
     search_count = cursor.fetchone()[0]
     
     text = f"""
-📊 *Sizning statistikangiz:*
+📊 Sizning statistikangiz:
 
 🔍 Qidiruvlar soni: {search_count}
 ❤️ Saqlangan filmlar: {len(favorites)}
@@ -438,12 +444,12 @@ def genres_cmd(message):
         btn = types.InlineKeyboardButton(genre_name, callback_data=f"genre_{genre_id}")
         keyboard.add(btn)
     
-    bot.send_message(message.chat.id, "🎪 *Janrlar bo'yicha filmlar:*", reply_markup=keyboard, parse_mode='Markdown')
+    bot.send_message(message.chat.id, "🎪 Janrlar bo'yicha filmlar:", reply_markup=keyboard, parse_mode='Markdown')
 
 @bot.message_handler(commands=['myid'])
 def get_my_id(message):
     user_id = message.from_user.id
-    bot.send_message(message.chat.id, f"🆔 Sizning ID: `{user_id}`", parse_mode='Markdown')
+    bot.send_message(message.chat.id, f"🆔 Sizning ID: {user_id}", parse_mode='Markdown')
 
 # Admin commands
 @bot.message_handler(commands=['admin'])
@@ -462,9 +468,9 @@ def admin_panel(message):
     keyboard.add(btn1, btn2, btn3, btn4, btn5, btn6)
     
     admin_text = """
-👨‍💼 *Admin Panel*
+👨‍💼 Admin Panel
 
-*Bot ma'lumotlari:*
+Bot ma'lumotlari:
 • Foydalanuvchilar: {users_count}
 • Qidiruvlar: {searches_count}
 • Bot holati: 🟢 Faol
@@ -544,7 +550,7 @@ def show_movie_details(chat_id, movie_id, user_id):
     cast_names = [actor['name'] for actor in cast]
     
     text = f"""
-🎬 *{title}* ({year})
+🎬 {title} ({year})
 
 ⭐ Reyting: {rating}/10
 ⏱️ Davomiylik: {runtime} daqiqa
@@ -597,7 +603,7 @@ def show_admin_stats(call):
     total_searches = get_search_count()
     
     text = f"""
-📊 *Bot Statistikasi:*
+📊 Bot Statistikasi:
 
 👥 Jami foydalanuvchilar: {total_users}
 🔍 Jami qidiruvlar: {total_searches}
@@ -637,7 +643,7 @@ def process_broadcast(message):
 
 def show_admin_users(call):
     users = get_all_users()[:15]
-    text = "👥 *So'ngi 15 foydalanuvchi:*\n\n"
+    text = "👥 So'ngi 15 foydalanuvchi:\n\n"
     for user in users:
         status = "✅" if user[3] else "❌"
         text += f"{status} {user[2]} (@{user[1]})\n"
@@ -651,7 +657,7 @@ def show_admin_settings(call):
     keyboard.add(btn1, btn2)
     
     text = """
-⚙️ *Bot Sozlamalari*
+⚙️ Bot Sozlamalari
 
 • Bot Token: ✅ Faol
 • TMDB API: ✅ Faol  
